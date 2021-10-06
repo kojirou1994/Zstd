@@ -70,26 +70,32 @@ public final class ZstdCompressionContext {
     }.get()
   }
 
-  public func set<T: FixedWidthInteger>(param: Zstd.CompressionParameter, value: T) throws {
+  public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.CompressionParameter) throws {
     try nothingOrZstdError {
       ZSTD_CCtx_setParameter(context, param, Int32(value))
     }
   }
 
-  public func set<T: RawRepresentable>(param: Zstd.CompressionParameter, value: T) throws where T.RawValue: FixedWidthInteger {
-    try set(param: param, value: value.rawValue)
+  public func set<T: RawRepresentable>(_ value: T,  for param: Zstd.CompressionParameter) throws where T.RawValue: FixedWidthInteger {
+    try set(value.rawValue, for: param)
   }
 
-  public func set(param: Zstd.CompressionParameter, value: Bool) throws {
-    try nothingOrZstdError {
-      ZSTD_CCtx_setParameter(context, param, value ? 1 : 0)
-    }
+  public func set(_ value: Bool, for param: Zstd.CompressionParameter) throws {
+    try set(value ? 1 as Int32 : 0, for: param)
   }
 
   public func set(pledgedSrcSize: UInt64) throws {
     try nothingOrZstdError {
       ZSTD_CCtx_setPledgedSrcSize(context, pledgedSrcSize)
     }
+  }
+
+  public func value(for param: Zstd.CompressionParameter) throws -> Int32 {
+    var r: Int32 = 0
+    try nothingOrZstdError {
+      ZSTD_CCtx_getParameter(context, param, &r)
+    }
+    return r
   }
 
   public func reset(directive: Zstd.ResetDirective) throws {

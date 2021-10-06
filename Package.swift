@@ -12,6 +12,14 @@ useSystemZstd = ProcessInfo.processInfo.environment["SYSTEM_ZSTD"] != nil
 
 let cZstd: Target
 let cZstdName = "CZstd"
+
+let zstd: Target = .target(
+  name: "Zstd",
+  dependencies: [
+    .target(name: cZstdName),
+  ]
+)
+
 if useSystemZstd {
   cZstd = .systemLibrary(
     name: cZstdName,
@@ -27,6 +35,12 @@ if useSystemZstd {
   )
 }
 
+if !useSystemZstd || ProcessInfo.processInfo.environment["SYSTEM_STATIC_ZSTD"] != nil {
+  zstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
+} else {
+  zstd.exclude.append(contentsOf: ["ZstdCompressionParameters.swift"])
+}
+
 let package = Package(
   name: "Zstd",
   products: [
@@ -36,12 +50,7 @@ let package = Package(
   ],
   targets: [
     cZstd,
-    .target(
-      name: "Zstd",
-      dependencies: [
-        .target(name: cZstdName),
-      ]
-    ),
+    zstd,
     .testTarget(
       name: "ZstdTests",
       dependencies: ["Zstd"]),

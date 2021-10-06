@@ -44,20 +44,26 @@ public final class ZstdDecompressionContext {
     }.get()
   }
 
-  public func set<T: FixedWidthInteger>(param: Zstd.DecompressionParameter, value: T) throws {
+  public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.DecompressionParameter) throws {
     try nothingOrZstdError {
       ZSTD_DCtx_setParameter(context, param, Int32(value))
     }
   }
 
-  public func set<T: RawRepresentable>(param: Zstd.DecompressionParameter, value: T) throws where T.RawValue: FixedWidthInteger {
-    try set(param: param, value: value.rawValue)
+  public func set<T: RawRepresentable>(_ value: T,  for param: Zstd.DecompressionParameter) throws where T.RawValue: FixedWidthInteger {
+    try set(value.rawValue, for: param)
   }
 
-  public func set(param: Zstd.DecompressionParameter, value: Bool) throws {
+  public func set(_ value: Bool, for param: Zstd.DecompressionParameter) throws {
+    try set(value ? 1 as Int32 : 0, for: param)
+  }
+
+  public func value(for param: Zstd.DecompressionParameter) throws -> Int32 {
+    var r: Int32 = 0
     try nothingOrZstdError {
-      ZSTD_DCtx_setParameter(context, param, value ? 1 : 0)
+      ZSTD_DCtx_getParameter(context, param, &r)
     }
+    return r
   }
 
   public func reset(directive: Zstd.ResetDirective) throws {
