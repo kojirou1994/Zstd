@@ -58,14 +58,6 @@ public final class ZstdDecompressionContext {
     try set(value ? 1 as Int32 : 0, for: param)
   }
 
-  public func value(for param: Zstd.DecompressionParameter) throws -> Int32 {
-    var r: Int32 = 0
-    try nothingOrZstdError {
-      ZSTD_DCtx_getParameter(context, param, &r)
-    }
-    return r
-  }
-
   public func reset(directive: Zstd.ResetDirective) throws {
     try nothingOrZstdError {
       ZSTD_DCtx_reset(context, directive)

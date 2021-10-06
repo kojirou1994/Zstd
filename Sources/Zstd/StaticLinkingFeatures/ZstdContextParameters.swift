@@ -47,3 +47,13 @@ extension ZstdCompressionContext {
     ZSTD_CCtx_setParametersUsingCCtxParams(context, parameters.params)
   }
 }
+
+public extension ZstdEstimate {
+  static func compressionContextSize(_ params: ZstdCompressionContext.Parameters) -> Int {
+    ZSTD_estimateCCtxSize_usingCCtxParams(params.params)
+  }
+
+  static func compressionStreamSize(_ params: ZstdCompressionContext.Parameters) -> Int {
+    ZSTD_estimateCStreamSize_usingCCtxParams(params.params)
+  }
+}

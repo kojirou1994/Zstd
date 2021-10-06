@@ -38,7 +38,7 @@ if useSystemZstd {
 if !useSystemZstd || ProcessInfo.processInfo.environment["SYSTEM_STATIC_ZSTD"] != nil {
   zstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
 } else {
-  zstd.exclude.append(contentsOf: ["ZstdCompressionParameters.swift"])
+  zstd.exclude.append(contentsOf: ["StaticLinkingFeatures"])
 }
 
 let package = Package(
