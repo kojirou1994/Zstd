@@ -1,7 +1,8 @@
 import CZstd
 
 public struct ZstdError: Error, CustomStringConvertible {
-  let code: Int
+
+  public let code: Int
 
   public var description: String {
     String(cString: ZSTD_getErrorName(code))
