@@ -60,6 +60,8 @@ public extension Zstd {
     ZSTD_compressBound(srcSize)
   }
 
+  typealias Strategy = ZSTD_strategy
+
   typealias ResetDirective = ZSTD_ResetDirective
 
   typealias EndDirective = ZSTD_EndDirective
@@ -143,4 +145,16 @@ public extension Zstd.CompressionParameter {
 
 public extension Zstd.DecompressionParameter {
   static var windowLogMax: Self { ZSTD_d_windowLogMax }
+}
+
+public extension Zstd.Strategy {
+  static var fast: Self { ZSTD_fast }
+  static var dfast: Self { ZSTD_dfast }
+  static var greedy: Self { ZSTD_greedy }
+  static var lazy: Self { ZSTD_lazy }
+  static var lazy2: Self { ZSTD_lazy2 }
+  static var btlazy2: Self { ZSTD_btlazy2 }
+  static var btopt: Self { ZSTD_btopt }
+  static var btultra: Self { ZSTD_btultra }
+  static var btultra2: Self { ZSTD_btultra2 }
 }

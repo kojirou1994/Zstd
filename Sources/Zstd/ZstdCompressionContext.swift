@@ -76,6 +76,10 @@ public final class ZstdCompressionContext {
     }
   }
 
+  public func set<T: RawRepresentable>(param: Zstd.CompressionParameter, value: T) throws where T.RawValue: FixedWidthInteger {
+    try set(param: param, value: value.rawValue)
+  }
+
   public func set(param: Zstd.CompressionParameter, value: Bool) throws {
     try nothingOrZstdError {
       ZSTD_CCtx_setParameter(context, param, value ? 1 : 0)

@@ -50,6 +50,10 @@ public final class ZstdDecompressionContext {
     }
   }
 
+  public func set<T: RawRepresentable>(param: Zstd.DecompressionParameter, value: T) throws where T.RawValue: FixedWidthInteger {
+    try set(param: param, value: value.rawValue)
+  }
+
   public func set(param: Zstd.DecompressionParameter, value: Bool) throws {
     try nothingOrZstdError {
       ZSTD_DCtx_setParameter(context, param, value ? 1 : 0)
