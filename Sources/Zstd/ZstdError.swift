@@ -8,13 +8,14 @@ public struct ZstdError: Error, CustomStringConvertible {
   }
 }
 
-func valueOrZstdError(_ v: Int) throws -> Result<Int, ZstdError> {
+func valueOrZstdError(_ body: () -> Int) throws -> Result<Int, ZstdError> {
+  let v = body()
   if ZSTD_isError(v) != 0 {
     return .failure(ZstdError(code: v))
   }
   return .success(v)
 }
 
-func nothingOrZstdError(_ v: Int) throws {
-  _ = try valueOrZstdError(v).get()
+func nothingOrZstdError(_ body: () -> Int) throws {
+  _ = try valueOrZstdError(body).get()
 }

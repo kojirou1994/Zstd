@@ -1,5 +1,6 @@
 //@_implementationOnly
 import CZstd
+@_exported import protocol Foundation.ContiguousBytes
 
 public func test() {
   ZSTD_compressBound(1)
@@ -10,12 +11,20 @@ public enum Zstd { }
 
 public extension Zstd {
 
-  static func compress(src: UnsafeRawBufferPointer, dst: UnsafeMutableRawBufferPointer, compressionLevel: Int32) throws -> Int {
-    try valueOrZstdError(ZSTD_compress(dst.baseAddress, dst.count, src.baseAddress, src.count, compressionLevel)).get()
+  static func compress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, compressionLevel: Int32) throws -> Int {
+    try valueOrZstdError {
+      src.withUnsafeBytes { src in
+        ZSTD_compress(dst.baseAddress, dst.count, src.baseAddress, src.count, compressionLevel)
+      }
+    }.get()
   }
 
-  static func decompress(src: UnsafeRawBufferPointer, dst: UnsafeMutableRawBufferPointer, compressionLevel: Int32) throws -> Int {
-    try valueOrZstdError(ZSTD_decompress(dst.baseAddress, dst.count, src.baseAddress, src.count)).get()
+  static func decompress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, compressionLevel: Int32) throws -> Int {
+    try valueOrZstdError {
+      src.withUnsafeBytes { src in
+        ZSTD_decompress(dst.baseAddress, dst.count, src.baseAddress, src.count)
+      }
+    }.get()
   }
 
   static var versionNumber: UInt32 {
@@ -91,11 +100,11 @@ public extension Zstd.EndDirective {
 }
 
 public extension Zstd.InBuffer {
-  init(buffer: UnsafeRawBufferPointer) {
+  init(_ buffer: UnsafeRawBufferPointer) {
     self.init(src: buffer.baseAddress, size: buffer.count, pos: 0)
   }
 
-  init(buffer: UnsafeMutableRawBufferPointer) {
+  init(_ buffer: UnsafeMutableRawBufferPointer) {
     self.init(src: buffer.baseAddress, size: buffer.count, pos: 0)
   }
 
@@ -106,7 +115,7 @@ public extension Zstd.InBuffer {
 
 
 public extension Zstd.OutBuffer {
-  init(buffer: UnsafeMutableRawBufferPointer) {
+  init(_ buffer: UnsafeMutableRawBufferPointer) {
     self.init(dst: buffer.baseAddress, size: buffer.count, pos: 0)
   }
 }
