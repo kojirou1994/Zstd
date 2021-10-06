@@ -1,4 +1,3 @@
-//@_implementationOnly
 import CZstd
 @_exported import protocol Foundation.ContiguousBytes
 

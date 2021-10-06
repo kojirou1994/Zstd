@@ -5,10 +5,7 @@ public final class ZstdDecompressionContext {
   public let context: OpaquePointer
 
   public init() throws {
-    guard let context = ZSTD_createDCtx() else {
-      fatalError()
-    }
-    self.context = context
+    context = try ZSTD_createDCtx().zstdUnwrap()
   }
 
   deinit {
