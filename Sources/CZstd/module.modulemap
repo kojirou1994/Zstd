@@ -1,0 +1,8 @@
+module CZstd [system] {
+//  header "shim.h"
+  header "/opt/local/include/zstd.h"
+  header "/opt/local/include/zstd_errors.h"
+  header "/opt/local/include/zdict.h"
+  link "zstd"
+  export *
+}
