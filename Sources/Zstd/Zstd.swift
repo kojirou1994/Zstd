@@ -18,7 +18,7 @@ public extension Zstd {
     }.get()
   }
 
-  static func decompress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, compressionLevel: Int32) throws -> Int {
+  static func decompress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer) throws -> Int {
     try valueOrZstdError {
       src.withUnsafeBytes { src in
         ZSTD_decompress(dst.baseAddress, dst.count, src.baseAddress, src.count)
@@ -32,8 +32,18 @@ public extension Zstd {
 
   static let version: String = String(cString: ZSTD_versionString())
 
-  static func getFrameContentSize(src: UnsafeRawBufferPointer) throws -> UInt64 {
-    ZSTD_getFrameContentSize(src.baseAddress, src.count)
+  static func getFrameContentSize<T: ContiguousBytes>(src: T) throws -> UInt64 {
+    src.withUnsafeBytes { src in
+      ZSTD_getFrameContentSize(src.baseAddress, src.count)
+    }
+  }
+
+  static var contentSizeError: UInt64 {
+    ZSTD_CONTENTSIZE_ERROR
+  }
+
+  static var contentSizeUnknown: UInt64 {
+    ZSTD_CONTENTSIZE_UNKNOWN
   }
 
   static func findFrameCompressedSize(src: UnsafeRawBufferPointer) throws -> Int {
