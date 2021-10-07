@@ -31,7 +31,11 @@ if useSystemZstd {
     name: cZstdName,
     path: "Sources/BundledZstd",
 //    resources: [.copy("LICENSE")]
-    exclude: ["LICENSE"],
+    exclude: [
+      "LICENSE",
+      "deprecated",
+      "legacy",
+    ],
     cSettings: [.define("ZSTD_MULTITHREAD", to: "1")],
     linkerSettings: [.linkedLibrary("pthread")]
   )
@@ -56,5 +60,6 @@ let package = Package(
     .testTarget(
       name: "ZstdTests",
       dependencies: ["Zstd"]),
-  ]
+  ],
+  cLanguageStandard: .c11
 )
