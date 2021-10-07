@@ -2,7 +2,7 @@ import CZstd
 
 public final class ZstdDecompressionContext {
 
-  public let context: OpaquePointer
+  internal let context: OpaquePointer
 
   public init() throws {
     context = try ZSTD_createDCtx().zstdUnwrap()
@@ -17,7 +17,7 @@ public final class ZstdDecompressionContext {
       src.withUnsafeBytes { src in
         ZSTD_decompressDCtx(context, dst.baseAddress, dst.count, src.baseAddress, src.count)
       }
-    }.get()
+    }
   }
 
   public func decompress<T: ContiguousBytes, D: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, dictionary: D) throws -> Int {
@@ -27,7 +27,7 @@ public final class ZstdDecompressionContext {
           ZSTD_decompress_usingDict(context, dst.baseAddress, dst.count, src.baseAddress, src.count, dictionary.baseAddress, dictionary.count)
         }
       }
-    }.get()
+    }
   }
 
   public func decompress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, dictionary: ZstdDecompressionDictionary) throws -> Int {
@@ -35,13 +35,13 @@ public final class ZstdDecompressionContext {
       src.withUnsafeBytes { src in
         ZSTD_decompress_usingDDict(context, dst.baseAddress, dst.count, src.baseAddress, src.count, dictionary.dic)
       }
-    }.get()
+    }
   }
 
   public func decompressStream(inBuffer: inout Zstd.InBuffer, outBuffer: inout Zstd.OutBuffer) throws -> Int {
     try valueOrZstdError {
       ZSTD_decompressStream(context, &outBuffer, &inBuffer)
-    }.get()
+    }
   }
 
   public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.DecompressionParameter) throws {

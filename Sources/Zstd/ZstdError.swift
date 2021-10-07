@@ -9,14 +9,16 @@ public struct ZstdError: Error, CustomStringConvertible {
   }
 }
 
-func valueOrZstdError(_ body: () -> Int) throws -> Result<Int, ZstdError> {
+@usableFromInline
+func valueOrZstdError(_ body: () -> Int) throws -> Int {
   let v = body()
   if ZSTD_isError(v) != 0 {
-    return .failure(ZstdError(code: v))
+    throw ZstdError(code: v)
   }
-  return .success(v)
+  return v
 }
 
+@usableFromInline
 func nothingOrZstdError(_ body: () -> Int) throws {
-  _ = try valueOrZstdError(body).get()
+  _ = try valueOrZstdError(body)
 }

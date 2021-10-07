@@ -15,7 +15,7 @@ public extension Zstd {
       src.withUnsafeBytes { src in
         ZSTD_compress(dst.baseAddress, dst.count, src.baseAddress, src.count, compressionLevel)
       }
-    }.get()
+    }
   }
 
   static func decompress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer) throws -> Int {
@@ -23,7 +23,7 @@ public extension Zstd {
       src.withUnsafeBytes { src in
         ZSTD_decompress(dst.baseAddress, dst.count, src.baseAddress, src.count)
       }
-    }.get()
+    }
   }
 
   static var versionNumber: UInt32 {

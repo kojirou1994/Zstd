@@ -37,7 +37,9 @@ if useSystemZstd {
       "legacy",
     ],
     cSettings: [.define("ZSTD_MULTITHREAD", to: "1")],
-    linkerSettings: [.linkedLibrary("pthread")]
+    linkerSettings: [
+      .linkedLibrary("pthread"),
+    ]
   )
 }
 
@@ -50,7 +52,8 @@ if !useSystemZstd || ProcessInfo.processInfo.environment["SYSTEM_STATIC_ZSTD"] !
 let package = Package(
   name: "Zstd",
   products: [
-    .library(name: "Zstd", targets: ["Zstd"]),
+    .library(name: cZstdName, targets: [cZstdName]),
+    .library(name: swiftZstd.name, targets: [swiftZstd.name]),
   ],
   dependencies: [
   ],

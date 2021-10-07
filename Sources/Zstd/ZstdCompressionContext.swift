@@ -2,7 +2,7 @@ import CZstd
 
 public final class ZstdCompressionContext {
 
-  public let context: OpaquePointer
+  internal let context: OpaquePointer
 
   public init() throws {
     context = try ZSTD_createCCtx().zstdUnwrap()
@@ -17,7 +17,7 @@ public final class ZstdCompressionContext {
       src.withUnsafeBytes { src in
         ZSTD_compressCCtx(context, dst.baseAddress, dst.count, src.baseAddress, src.count, compressionLevel)
       }
-    }.get()
+    }
   }
 
   public func compress2<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer) throws -> Int {
@@ -25,7 +25,7 @@ public final class ZstdCompressionContext {
       src.withUnsafeBytes { src in
         ZSTD_compress2(context, dst.baseAddress, dst.count, src.baseAddress, src.count)
       }
-    }.get()
+    }
   }
 
   public func compress<T: ContiguousBytes, D: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, dictionary: D, compressionLevel: Int32) throws -> Int {
@@ -35,7 +35,7 @@ public final class ZstdCompressionContext {
           ZSTD_compress_usingDict(context, dst.baseAddress, dst.count, src.baseAddress, src.count, dictionary.baseAddress, dictionary.count, compressionLevel)
         }
       }
-    }.get()
+    }
   }
 
   public func compress<T: ContiguousBytes>(src: T, dst: UnsafeMutableRawBufferPointer, dict: ZstdCompressionDictionary) throws -> Int {
@@ -43,31 +43,31 @@ public final class ZstdCompressionContext {
       src.withUnsafeBytes { src in
         ZSTD_compress_usingCDict(context, dst.baseAddress, dst.count, src.baseAddress, src.count, dict.dic)
       }
-    }.get()
+    }
   }
 
   public func compressStream(inBuffer: inout Zstd.InBuffer, outBuffer: inout Zstd.OutBuffer) throws -> Int {
     try valueOrZstdError {
       ZSTD_compressStream(context, &outBuffer, &inBuffer)
-    }.get()
+    }
   }
 
   public func flushStream(outBuffer: inout Zstd.OutBuffer) throws -> Int {
     try valueOrZstdError {
       ZSTD_flushStream(context, &outBuffer)
-    }.get()
+    }
   }
 
   public func endStream(outBuffer: inout Zstd.OutBuffer) throws -> Int {
     try valueOrZstdError{
       ZSTD_endStream(context, &outBuffer)
-    }.get()
+    }
   }
 
   public func compressStream2(inBuffer: inout Zstd.InBuffer, outBuffer: inout Zstd.OutBuffer, endOp: Zstd.EndDirective) throws -> Int {
     try valueOrZstdError {
       ZSTD_compressStream2(context, &outBuffer, &inBuffer, endOp)
-    }.get()
+    }
   }
 
   public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.CompressionParameter) throws {
