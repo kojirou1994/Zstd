@@ -13,7 +13,7 @@ useSystemZstd = ProcessInfo.processInfo.environment["SYSTEM_ZSTD"] != nil
 let cZstd: Target
 let cZstdName = "CZstd"
 
-let zstd: Target = .target(
+let swiftZstd: Target = .target(
   name: "Zstd",
   dependencies: [
     .target(name: cZstdName),
@@ -31,14 +31,16 @@ if useSystemZstd {
     name: cZstdName,
     path: "Sources/BundledZstd",
 //    resources: [.copy("LICENSE")]
-    exclude: ["LICENSE"]
+    exclude: ["LICENSE"],
+    cSettings: [.define("ZSTD_MULTITHREAD", to: "1")],
+    linkerSettings: [.linkedLibrary("pthread")]
   )
 }
 
 if !useSystemZstd || ProcessInfo.processInfo.environment["SYSTEM_STATIC_ZSTD"] != nil {
-  zstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
+  swiftZstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
 } else {
-  zstd.exclude.append(contentsOf: ["StaticLinkingFeatures"])
+  swiftZstd.exclude.append(contentsOf: ["StaticLinkingFeatures"])
 }
 
 let package = Package(
@@ -50,7 +52,7 @@ let package = Package(
   ],
   targets: [
     cZstd,
-    zstd,
+    swiftZstd,
     .testTarget(
       name: "ZstdTests",
       dependencies: ["Zstd"]),
