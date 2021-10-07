@@ -68,3 +68,16 @@ public final class ZstdDecompressionContext {
     ZSTD_sizeof_DCtx(context)
   }
 }
+
+public extension ZstdDecompressionContext {
+  func decompressStreamAll(inBuffer: inout Zstd.InBuffer, outBuffer: inout Zstd.OutBuffer, body: (UnsafeRawBufferPointer) throws -> Void) throws {
+    while true {
+      outBuffer.pos = 0
+      let remaining = try decompressStream(inBuffer: &inBuffer, outBuffer: &outBuffer)
+      try body(.init(start: outBuffer.dst, count: outBuffer.pos))
+      if inBuffer.isCompleted, remaining == 0 {
+        return
+      }
+    }
+  }
+}

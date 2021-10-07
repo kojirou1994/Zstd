@@ -92,6 +92,10 @@ public extension Zstd {
     try ZSTD_dParam_getBounds(param).getRange()
   }
 
+  static var emptyInput: InBuffer {
+    .init(src: nil, size: 0, pos: 0)
+  }
+
 }
 
 public extension Zstd.ResetDirective {

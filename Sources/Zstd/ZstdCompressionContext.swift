@@ -100,3 +100,16 @@ public final class ZstdCompressionContext {
     ZSTD_sizeof_CCtx(context)
   }
 }
+
+public extension ZstdCompressionContext {
+  func compressStreamAll(inBuffer: inout Zstd.InBuffer, outBuffer: inout Zstd.OutBuffer, endOp: Zstd.EndDirective, body: (UnsafeRawBufferPointer) throws -> Void) throws {
+    repeat {
+      outBuffer.pos = 0
+      let remaining = try compressStream2(inBuffer: &inBuffer, outBuffer: &outBuffer, endOp: endOp)
+      try body(.init(start: outBuffer.dst, count: outBuffer.pos))
+      if endOp == .end ? remaining == 0 : inBuffer.isCompleted {
+        return
+      }
+    } while true
+  }
+}
