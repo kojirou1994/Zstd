@@ -58,12 +58,20 @@ public extension Zstd {
     ZSTD_defaultCLevel()
   }
 
-  static var recommendedInputBufferSize: Int {
+  static var compressionInputBufferSize: Int {
     ZSTD_CStreamInSize()
   }
 
-  static var recommendedOutputBufferSize: Int {
+  static var compressionOutputBufferSize: Int {
     ZSTD_CStreamOutSize()
+  }
+
+  static var decompressionInputBufferSize: Int {
+    ZSTD_DStreamInSize()
+  }
+
+  static var decompressionOutputBufferSize: Int {
+    ZSTD_DStreamOutSize()
   }
 
   static func maximumCompressedSize(srcSize: Int) -> Int {

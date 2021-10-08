@@ -9,8 +9,10 @@ final class ZstdLinkTests: XCTestCase {
     print(Zstd.compressionLevelRange)
     print(Zstd.defaultCompressionLevel)
 
-    print(Zstd.recommendedInputBufferSize)
-    print(Zstd.recommendedOutputBufferSize)
+    print("compressionInputBufferSize", Zstd.compressionInputBufferSize)
+    print("compressionOutputBufferSize", Zstd.compressionOutputBufferSize)
+    print("decompressionInputBufferSize", Zstd.decompressionInputBufferSize)
+    print("decompressionOutputBufferSize", Zstd.decompressionOutputBufferSize)
 
     print(try Zstd.getBounds(param: .compressionLevel))
     print(try Zstd.getBounds(param: .nbWorkers))
