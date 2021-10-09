@@ -1,11 +1,6 @@
 import CZstd
 @_exported import protocol Foundation.ContiguousBytes
 
-public func test() {
-  ZSTD_compressBound(1)
-
-}
-
 public enum Zstd { }
 
 public extension Zstd {

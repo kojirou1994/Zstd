@@ -1,3 +1,4 @@
+#if ZSTD_EXPERIMENTAL
 import CZstd
 
 public enum ZstdEstimate { }
@@ -45,3 +46,4 @@ public extension ZstdEstimate {
   }
 
 }
+#endif

@@ -43,10 +43,9 @@ if useSystemZstd {
   )
 }
 
-if !useSystemZstd || ProcessInfo.processInfo.environment["SYSTEM_STATIC_ZSTD"] != nil {
+if !useSystemZstd || ProcessInfo.processInfo.environment["ZSTD_EXPERIMENTAL"] != nil {
   swiftZstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
-} else {
-  swiftZstd.exclude.append(contentsOf: ["StaticLinkingFeatures"])
+  swiftZstd.swiftSettings = [.define("ZSTD_EXPERIMENTAL")]
 }
 
 let package = Package(
