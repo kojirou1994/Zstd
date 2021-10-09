@@ -62,7 +62,6 @@ public final class ZstdDecompressionContext {
     try nothingOrZstdError {
       ZSTD_DCtx_reset(context, directive)
     }
-    referencedDictionary = nil
   }
 
   private var referencedDictionary: ZstdDecompressionDictionary?

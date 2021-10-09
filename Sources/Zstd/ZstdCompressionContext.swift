@@ -94,7 +94,6 @@ public final class ZstdCompressionContext {
     try nothingOrZstdError {
       ZSTD_CCtx_reset(context, directive)
     }
-    referencedDictionary = nil
   }
 
   private var referencedDictionary: ZstdCompressionDictionary?
