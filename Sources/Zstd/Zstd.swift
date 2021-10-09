@@ -104,6 +104,18 @@ public extension Zstd {
     .init(src: nil, size: 0, pos: 0)
   }
 
+  static func getDictionaryID<B: ContiguousBytes>(fromDictionary dict: B) -> UInt32 {
+    dict.withUnsafeBytes { buffer in
+      ZSTD_getDictID_fromDict(buffer.baseAddress, buffer.count)
+    }
+  }
+
+  static func getDictionaryID<B: ContiguousBytes>(fromFrame frame: B) -> UInt32 {
+    frame.withUnsafeBytes { buffer in
+      ZSTD_getDictID_fromFrame(buffer.baseAddress, buffer.count)
+    }
+  }
+
 }
 
 public extension Zstd.ResetDirective {

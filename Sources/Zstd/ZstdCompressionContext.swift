@@ -94,6 +94,39 @@ public final class ZstdCompressionContext {
     try nothingOrZstdError {
       ZSTD_CCtx_reset(context, directive)
     }
+    referencedDictionary = nil
+  }
+
+  private var referencedDictionary: ZstdCompressionDictionary?
+
+  public func load<B: ContiguousBytes>(dictionary: B) throws {
+    try nothingOrZstdError {
+      dictionary.withUnsafeBytes { buffer in
+        ZSTD_CCtx_loadDictionary(context, buffer.baseAddress, buffer.count)
+      }
+    }
+    referencedDictionary = nil
+  }
+
+  public func ref(dictionary: ZstdCompressionDictionary) throws {
+    try nothingOrZstdError {
+      ZSTD_CCtx_refCDict(context, dictionary.dic)
+    }
+    referencedDictionary = dictionary
+  }
+
+  public func ref(prefix: UnsafeRawBufferPointer) throws {
+    try nothingOrZstdError {
+      ZSTD_CCtx_refPrefix(context, prefix.baseAddress, prefix.count)
+    }
+    referencedDictionary = nil
+  }
+
+  public func unloadDictionary() throws {
+    try nothingOrZstdError {
+      ZSTD_CCtx_refCDict(context, nil)
+    }
+    referencedDictionary = nil
   }
 
   public var size: Int {
