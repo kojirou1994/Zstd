@@ -31,7 +31,9 @@ if useSystemZstd {
     exclude: [
       "LICENSE",
     ],
-    cSettings: [.define("ZSTD_MULTITHREAD", to: "1")],
+    cSettings: [
+      .define("ZSTD_MULTITHREAD", to: "1"),
+    ],
     linkerSettings: [
       .linkedLibrary("pthread"),
     ]
@@ -39,7 +41,6 @@ if useSystemZstd {
 }
 
 if !useSystemZstd {
-  swiftZstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
   swiftZstd.swiftSettings = [.define("ZSTD_EXPERIMENTAL")]
 }
 
