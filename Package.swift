@@ -56,6 +56,7 @@ let package = Package(
     .library(name: swiftZstd.name, targets: [swiftZstd.name]),
   ],
   dependencies: [
+    .package(url: "https://github.com/kojirou1994/CUtility.git", from: "0.1.0"),
   ],
   targets: [
     cZstd,
