@@ -1,24 +1,35 @@
 import CZstd
+import CUtility
 
-public struct ZstdError: Error, CustomStringConvertible {
+public struct ZstdError: RawRepresentable, Error, CustomStringConvertible {
+  
+  public init(rawValue: Int) {
+    self.rawValue = rawValue
+  }
 
-  public let code: Int
+  public let rawValue: Int
+
+  @inlinable
+  @_alwaysEmitIntoClient
+  public var name: StaticCString {
+    .init(cString: ZSTD_getErrorName(rawValue))
+  }
 
   public var description: String {
-    String(cString: ZSTD_getErrorName(code))
+    "\(String(describing: Self.self))(code: \(rawValue), name: \(name.string))"
   }
 }
 
-@usableFromInline
-func valueOrZstdError(_ body: () -> Int) throws -> Int {
+@inlinable
+func valueOrZstdError<T: FixedWidthInteger>(_ body: () -> T) -> Result<T, ZstdError> {
   let v = body()
-  if ZSTD_isError(v) != 0 {
-    throw ZstdError(code: v)
+  if _slowPath(ZSTD_isError(Int(v)) != 0) {
+    return .failure(ZstdError(rawValue: Int(v)))
   }
-  return v
+  return .success(v)
 }
 
-@usableFromInline
-func nothingOrZstdError(_ body: () -> Int) throws {
-  _ = try valueOrZstdError(body)
+@inlinable
+func nothingOrZstdError(_ body: () -> Int) -> Result<Void, ZstdError> {
+  valueOrZstdError(body).map { _ in () }
 }

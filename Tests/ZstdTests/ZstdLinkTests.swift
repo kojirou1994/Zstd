@@ -3,7 +3,7 @@ import Zstd
 
 final class ZstdLinkTests: XCTestCase {
   func testConstants() throws {
-    print(Zstd.version)
+    print(Zstd.version.string)
     print(Zstd.versionNumber)
 
     print(Zstd.compressionLevelRange)
@@ -14,8 +14,8 @@ final class ZstdLinkTests: XCTestCase {
     print("decompressionInputBufferSize", Zstd.decompressionInputBufferSize)
     print("decompressionOutputBufferSize", Zstd.decompressionOutputBufferSize)
 
-    print(try Zstd.getBounds(param: .compressionLevel))
-    print(try Zstd.getBounds(param: .nbWorkers))
+    print(try Zstd.CompressionParameter.compressionLevel.bounds.get())
+    print(try Zstd.CompressionParameter.nbWorkers.bounds.get())
 
   }
 }

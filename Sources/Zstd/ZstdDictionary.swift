@@ -1,45 +1,63 @@
 import CZstd
 
 public final class ZstdCompressionDictionary {
-  let dic: OpaquePointer
+  @usableFromInline
+  internal let op: OpaquePointer
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public init<T: ContiguousBytes>(buffer: T, compressionLevel: Int32) throws {
-    dic = try buffer.withUnsafeBytes { buffer in
+    op = try buffer.withUnsafeBytes { buffer in
       try ZSTD_createCDict(buffer.baseAddress, buffer.count, compressionLevel).zstdUnwrap()
     }
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public init(compressionLevel: Int32) throws {
-    dic = try ZSTD_createCDict(nil, 0, compressionLevel).zstdUnwrap()
+    op = try ZSTD_createCDict(nil, 0, compressionLevel).zstdUnwrap()
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   deinit {
-    ZSTD_freeCDict(dic)
+    ZSTD_freeCDict(op)
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public var size: Int {
-    ZSTD_sizeof_CDict(dic)
+    ZSTD_sizeof_CDict(op)
   }
 }
 
 public final class ZstdDecompressionDictionary {
-  let dic: OpaquePointer
+  @usableFromInline
+  internal let op: OpaquePointer
 
-  public init<T: ContiguousBytes>(buffer: T) throws {
-    dic = try buffer.withUnsafeBytes { buffer in
+  @inlinable
+  @_alwaysEmitIntoClient
+  public init(buffer: any ContiguousBytes) throws {
+    op = try buffer.withUnsafeBytes { buffer in
       try ZSTD_createDDict(buffer.baseAddress, buffer.count).zstdUnwrap()
     }
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   deinit {
-    ZSTD_freeDDict(dic)
+    ZSTD_freeDDict(op)
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public var id: UInt32 {
-    ZSTD_getDictID_fromDDict(dic)
+    ZSTD_getDictID_fromDDict(op)
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public var size: Int {
-    ZSTD_sizeof_DDict(dic)
+    ZSTD_sizeof_DDict(op)
   }
 }
