@@ -33,7 +33,7 @@ for inFile in inFiles {
   let thisFileBuffer = UnsafeMutableRawBufferPointer(rebasing: fileBuffer.prefix(inFileSize))
   _ = try inFd.read(into: thisFileBuffer)
 
-  let newSize = try context.compress(src: thisFileBuffer, dst: compressBuffer, compressionLevel: 1)
+  let newSize = try context.compress(src: thisFileBuffer, dst: compressBuffer, compressionLevel: 1).get()
 
   _ = try outFd.write(UnsafeRawBufferPointer(rebasing: compressBuffer.prefix(newSize)))
 

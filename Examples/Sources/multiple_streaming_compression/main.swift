@@ -12,12 +12,12 @@ if CommandLine.argc < 2 {
 let inFiles = CommandLine.arguments.dropFirst()
 
 let context = try ZstdCompressionContext()
-try context.set(7, for: .compressionLevel)
-try context.set(true,  for: .checksumFlag)
+try context.set(7, for: .compressionLevel).get()
+try context.set(true,  for: .checksumFlag).get()
 
-let fileBuffer = UnsafeMutableRawBufferPointer.allocate(byteCount: Zstd.recommendedInputBufferSize, alignment: MemoryLayout<UInt8>.alignment)
+let fileBuffer = UnsafeMutableRawBufferPointer.allocate(byteCount: Zstd.compressionInputBufferSize, alignment: MemoryLayout<UInt8>.alignment)
 defer { fileBuffer.deallocate() }
-let compressBuffer = UnsafeMutableRawBufferPointer.allocate(byteCount: Zstd.recommendedOutputBufferSize, alignment: MemoryLayout<UInt8>.alignment)
+let compressBuffer = UnsafeMutableRawBufferPointer.allocate(byteCount: Zstd.compressionOutputBufferSize, alignment: MemoryLayout<UInt8>.alignment)
 defer { compressBuffer.deallocate() }
 
 var inputZ = Zstd.InBuffer(fileBuffer)
@@ -43,7 +43,7 @@ for inFile in inFiles {
     var finished = false
     repeat {
       outputZ.pos = 0
-      let remaining = try context.compressStream2(inBuffer: &inputZ, outBuffer: &outputZ, endOp: mode)
+      let remaining = try context.compressStream2(inBuffer: &inputZ, outBuffer: &outputZ, endOp: mode).get()
       _ = try outFd.write(UnsafeRawBufferPointer(rebasing: compressBuffer.prefix(outputZ.pos)))
       finished = lastChunk ? (remaining == 0) : inputZ.isCompleted
     } while !finished
@@ -51,6 +51,4 @@ for inFile in inFiles {
       break
     }
   }
-
-  print("\(inFile) : \(inFileSize) -> \(newSize) - \(outFileURL.path) ")
 }

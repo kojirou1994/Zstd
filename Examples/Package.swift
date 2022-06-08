@@ -7,8 +7,6 @@ let package = Package(
   platforms: [
     .macOS(.v11),
   ],
-  products: [
-  ],
   dependencies: [
     .package(path: "../"),
   ],

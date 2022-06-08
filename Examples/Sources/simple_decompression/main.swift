@@ -18,7 +18,7 @@ let inBuffer = try Data(contentsOf: inFileURL, options: [.uncached])
  * content size is always written into the header, either use streaming
  * decompression, or ZSTD_decompressBound().
  */
-let rSize = try Zstd.getFrameContentSize(src: inBuffer)
+let rSize = try Zstd.getFrameContentSize(src: inBuffer).get()
 
 precondition(rSize != Zstd.contentSizeError, "\(inFile): not compressed by zstd!")
 precondition(rSize != Zstd.contentSizeUnknown, "\(inFile): original size unknown!")
@@ -32,7 +32,7 @@ defer {
  * and use ZSTD_decompressDCtx(). If you want to set advanced parameters,
  * use ZSTD_DCtx_setParameter().
  */
-let dSize = try Zstd.decompress(src: inBuffer, dst: outBuffer)
+let dSize = try Zstd.decompress(src: inBuffer, dst: outBuffer).get()
 precondition(rSize == dSize, "Impossible because zstd will check this condition!")
 
 print(String(format: "\(inFile) : %6u -> %7u ", inBuffer.count, rSize))
