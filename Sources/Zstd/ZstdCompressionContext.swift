@@ -281,8 +281,10 @@ extension ZstdCompressionContext {
 extension ZstdCompressionContext {
   @inlinable
   @_alwaysEmitIntoClient
-  public func set(parameters: Parameters) {
-    ZSTD_CCtx_setParametersUsingCCtxParams(context, parameters.params)
+  public func set(parameters: Parameters) -> Result<Void, ZstdError> {
+    nothingOrZstdError {
+      ZSTD_CCtx_setParametersUsingCCtxParams(context, parameters.params)
+    }
   }
 }
 

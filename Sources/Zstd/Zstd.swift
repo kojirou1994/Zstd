@@ -19,7 +19,7 @@ public extension Zstd {
   @inlinable
   @_alwaysEmitIntoClient
   static func decompress(src: any ContiguousBytes, dst: UnsafeMutableRawBufferPointer) -> Result<Int, ZstdError> {
-     valueOrZstdError {
+    valueOrZstdError {
       src.withUnsafeBytes { src in
         ZSTD_decompress(dst.baseAddress, dst.count, src.baseAddress, src.count)
       }

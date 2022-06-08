@@ -41,8 +41,10 @@ public extension Zstd {
 
   @inlinable
   @_alwaysEmitIntoClient
-  static func decompressionStreamSize(frame: UnsafeRawBufferPointer) -> Int {
-    ZSTD_estimateDStreamSize_fromFrame(frame.baseAddress, frame.count)
+  static func decompressionStreamSize(frame: any ContiguousBytes) -> Int {
+    frame.withUnsafeBytes { buffer in
+      ZSTD_estimateDStreamSize_fromFrame(buffer.baseAddress, buffer.count)
+    }
   }
 
   @inlinable
