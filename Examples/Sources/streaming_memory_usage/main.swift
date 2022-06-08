@@ -1,7 +1,7 @@
 import Zstd
 import Foundation
 
-let maxTestedLevel = 12
+let maxTestedLevel: CInt = 12
 
 print("\n Zstandard (v\(Zstd.version.string)) memory usage for streaming : \n")
 
