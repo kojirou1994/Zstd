@@ -17,6 +17,7 @@ let swiftZstd: Target = .target(
   name: "Zstd",
   dependencies: [
     .target(name: cZstdName),
+    .product(name: "CUtility", package: "CUtility"),
   ]
 )
 
