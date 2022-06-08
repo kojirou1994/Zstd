@@ -59,5 +59,6 @@ let package = Package(
       name: "ZstdTests",
       dependencies: ["Zstd"]),
   ],
-  cLanguageStandard: .c11
+  cLanguageStandard: .gnu11,
+  cxxLanguageStandard: .gnucxx14
 )
