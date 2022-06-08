@@ -44,7 +44,7 @@ if useSystemZstd {
   )
 }
 
-if !useSystemZstd || ProcessInfo.processInfo.environment["ZSTD_EXPERIMENTAL"] != nil {
+if !useSystemZstd {
   swiftZstd.cSettings = [.define("ZSTD_STATIC_LINKING_ONLY")]
   swiftZstd.swiftSettings = [.define("ZSTD_EXPERIMENTAL")]
 }
