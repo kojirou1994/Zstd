@@ -30,8 +30,6 @@ if useSystemZstd {
 //    resources: [.copy("LICENSE")]
     exclude: [
       "LICENSE",
-      "deprecated",
-      "legacy",
     ],
     cSettings: [.define("ZSTD_MULTITHREAD", to: "1")],
     linkerSettings: [
