@@ -4,11 +4,7 @@ import PackageDescription
 import Foundation
 
 let useSystemZstd: Bool
-#if os(Linux)
-useSystemZstd = true
-#else
 useSystemZstd = ProcessInfo.processInfo.environment["SYSTEM_ZSTD"] != nil
-#endif
 
 let cZstd: Target
 let cZstdName = "CZstd"
