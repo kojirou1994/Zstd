@@ -6,7 +6,7 @@ public final class ZstdCompressionDictionary {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public init<T: ContiguousBytes>(buffer: T, compressionLevel: Int32) throws {
+  public init(buffer: any ContiguousBytes, compressionLevel: Int32) throws {
     op = try buffer.withUnsafeBytes { buffer in
       try ZSTD_createCDict(buffer.baseAddress, buffer.count, compressionLevel).zstdUnwrap()
     }

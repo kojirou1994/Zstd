@@ -192,6 +192,8 @@ public extension ZstdCompressionContext {
 // MARK: Experimental APIs
 #if ZSTD_EXPERIMENTAL
 public extension ZstdCompressionContext {
+  @inlinable
+  @_alwaysEmitIntoClient
   func value(for param: Zstd.CompressionParameter) -> Result<Int32, ZstdError> {
     var r: Int32 = 0
     return nothingOrZstdError {
@@ -204,30 +206,43 @@ public extension ZstdCompressionContext {
 extension ZstdCompressionContext {
   public final class Parameters {
 
+    @usableFromInline
     internal let params: OpaquePointer
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public init() throws {
       params = try ZSTD_createCCtxParams().zstdUnwrap()
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     deinit {
       ZSTD_freeCCtxParams(params)
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> {
       nothingOrZstdError {
         ZSTD_CCtxParams_setParameter(params, param, Int32(value))
       }
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func set<T: RawRepresentable>(_ value: T,  for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> where T.RawValue: FixedWidthInteger {
       set(value.rawValue, for: param)
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func set(_ value: Bool, for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> {
       set(value ? 1 as Int32 : 0, for: param)
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func value(for param: Zstd.CompressionParameter) -> Result<Int32, ZstdError> {
       var r: Int32 = 0
       return nothingOrZstdError {
@@ -236,10 +251,14 @@ extension ZstdCompressionContext {
       .map { r }
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func reset() {
       ZSTD_CCtxParams_reset(params)
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func estimateCompressionContextSize() -> Result<Int, ZstdError> {
       assert(try! value(for: .nbWorkers).get() == 0)
       return valueOrZstdError {
@@ -247,6 +266,8 @@ extension ZstdCompressionContext {
       }
     }
 
+    @inlinable
+    @_alwaysEmitIntoClient
     public func estimateCompressionStreamSize() -> Result<Int, ZstdError> {
       assert(try! value(for: .nbWorkers).get() == 0)
       return valueOrZstdError {
@@ -258,6 +279,8 @@ extension ZstdCompressionContext {
 }
 
 extension ZstdCompressionContext {
+  @inlinable
+  @_alwaysEmitIntoClient
   public func set(parameters: Parameters) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_setParametersUsingCCtxParams(context, parameters.params)
