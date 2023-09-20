@@ -1,6 +1,6 @@
 import CZstd
 
-public final class ZstdCompressionContext {
+public struct ZstdCompressionContext: ~Copyable {
 
   @usableFromInline
   internal let context: OpaquePointer
@@ -91,20 +91,28 @@ public final class ZstdCompressionContext {
     }
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public func set<T: FixedWidthInteger>(_ value: T, for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_setParameter(context, param, Int32(value))
     }
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public func set<T: RawRepresentable>(_ value: T,  for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> where T.RawValue: FixedWidthInteger {
     set(value.rawValue, for: param)
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public func set(_ value: Bool, for param: Zstd.CompressionParameter) -> Result<Void, ZstdError> {
     set(value ? 1 as Int32 : 0, for: param)
   }
 
+  @inlinable
+  @_alwaysEmitIntoClient
   public func set(pledgedSrcSize: UInt64) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_setPledgedSrcSize(context, pledgedSrcSize)
@@ -124,7 +132,7 @@ public final class ZstdCompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func load(dictionary: any ContiguousBytes) -> Result<Void, ZstdError> {
+  public mutating func load(dictionary: any ContiguousBytes) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       dictionary.withUnsafeBytes { buffer in
         ZSTD_CCtx_loadDictionary(context, buffer.baseAddress, buffer.count)
@@ -137,7 +145,7 @@ public final class ZstdCompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func ref(dictionary: ZstdCompressionDictionary) -> Result<Void, ZstdError> {
+  public mutating func ref(dictionary: ZstdCompressionDictionary) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_refCDict(context, dictionary.op)
     }
@@ -148,7 +156,7 @@ public final class ZstdCompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func ref(prefix: UnsafeRawBufferPointer) -> Result<Void, ZstdError> {
+  public mutating func ref(prefix: UnsafeRawBufferPointer) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_refPrefix(context, prefix.baseAddress, prefix.count)
     }
@@ -159,7 +167,7 @@ public final class ZstdCompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func unloadDictionary() -> Result<Void, ZstdError> {
+  public mutating func unloadDictionary() -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_refCDict(context, nil)
     }
@@ -204,7 +212,7 @@ public extension ZstdCompressionContext {
 }
 
 extension ZstdCompressionContext {
-  public final class Parameters {
+  public struct Parameters: ~Copyable {
 
     @usableFromInline
     internal let params: OpaquePointer
@@ -281,7 +289,7 @@ extension ZstdCompressionContext {
 extension ZstdCompressionContext {
   @inlinable
   @_alwaysEmitIntoClient
-  public func set(parameters: Parameters) -> Result<Void, ZstdError> {
+  public func set(parameters: borrowing Parameters) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_CCtx_setParametersUsingCCtxParams(context, parameters.params)
     }

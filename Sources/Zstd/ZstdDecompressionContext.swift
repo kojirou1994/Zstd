@@ -1,6 +1,6 @@
 import CZstd
 
-public final class ZstdDecompressionContext {
+public struct ZstdDecompressionContext: ~Copyable {
 
   @usableFromInline
   internal let context: OpaquePointer
@@ -90,7 +90,7 @@ public final class ZstdDecompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func load(dictionary: any ContiguousBytes) -> Result<Void, ZstdError> {
+  public mutating func load(dictionary: any ContiguousBytes) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       dictionary.withUnsafeBytes { buffer in
         ZSTD_DCtx_loadDictionary(context, buffer.baseAddress, buffer.count)
@@ -103,7 +103,7 @@ public final class ZstdDecompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func ref(dictionary: ZstdDecompressionDictionary) -> Result<Void, ZstdError> {
+  public mutating func ref(dictionary: ZstdDecompressionDictionary) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_DCtx_refDDict(context, dictionary.op)
     }
@@ -114,7 +114,7 @@ public final class ZstdDecompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func ref(prefix: UnsafeRawBufferPointer) -> Result<Void, ZstdError> {
+  public mutating func ref(prefix: UnsafeRawBufferPointer) -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_DCtx_refPrefix(context, prefix.baseAddress, prefix.count)
     }
@@ -125,7 +125,7 @@ public final class ZstdDecompressionContext {
 
   @inlinable
   @_alwaysEmitIntoClient
-  public func unloadDictionary() -> Result<Void, ZstdError> {
+  public mutating func unloadDictionary() -> Result<Void, ZstdError> {
     nothingOrZstdError {
       ZSTD_DCtx_refDDict(context, nil)
     }
