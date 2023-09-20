@@ -18,5 +18,5 @@ defer {
 }
 
 let cSize = try Zstd.compress(src: inBuffer, dst: outBuffer, compressionLevel: 1).get()
-print(String(format: "\(CommandLine.arguments[1]) : %6u -> %7u - \(outFileURL.path) ", inBuffer.count, cSize))
+print(String(format: "\(CommandLine.arguments[1]) : %6u -> %7u - \(outFileURL.path) ", UInt(inBuffer.count), UInt(cSize)))
 try Data(bytesNoCopy: outBuffer.baseAddress!, count: cSize, deallocator: .none).write(to: outFileURL)

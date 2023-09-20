@@ -35,6 +35,6 @@ defer {
 let dSize = try Zstd.decompress(src: inBuffer, dst: outBuffer).get()
 precondition(rSize == dSize, "Impossible because zstd will check this condition!")
 
-print(String(format: "\(inFile) : %6u -> %7u ", inBuffer.count, rSize))
+print(String(format: "\(inFile) : %6u -> %7u ", UInt(inBuffer.count), rSize))
 
 print("\(inFile) correctly decoded (in memory). ")
